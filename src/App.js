@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import Counter from "./components/counter";
 import ClassComponent from "./components/ClassComponent";
 import './styles/App.css';
@@ -14,11 +14,15 @@ function App() {
     {id:2, title: 'React 2', body:'Description' },
     {id:3, title: 'React 3', body:'Description' }
   ])
-  const[title, setTitle] = useState('')
+  const [post, setPost] = useState({title:'', body:''})
+
+
 
 
   const addNewPost = (e) => {
-      e.preventDefault();
+    e.preventDefault()
+    setPosts([...posts, {...post, id:Date.now()}])
+    setPost({title:'', body:''})
   }
 
 
@@ -27,11 +31,17 @@ function App() {
       <form>
         {/*Управляемый компонент*/}
         <MyInput
-          value={title}
-          onChange = {e => setTitle(e.target.value)}
+          value={post.title}
+          onChange = {e => setPost({...post, title:e.target.value})}
           type="text"
           placeholder="Title"/>
-          <MyInput type="text" placeholder="description"/>
+
+        {/*Неуправляемый компонент*/}
+          <MyInput
+            value={post.body}
+            onChange = {e => setPost({...post, body:e.target.value})}
+            type="text"
+            placeholder="description"/>
           <MyButton  onClick={addNewPost}>Create post</MyButton>
       </form>
       <PostList posts={posts} title="React Lists"/>
