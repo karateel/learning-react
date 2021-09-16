@@ -1,0 +1,22 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+#root{
+   display: flex;
+    justify-content: center;
+}
+
+.App{
+    width: 500px;
+}
+.post{
+    display: flex;
+    padding: 15px;
+    border: 2px solid seagreen;
+    margin-top: 15px;
+    justify-content: space-between;
+    align-items: center;
+}
