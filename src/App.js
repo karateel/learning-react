@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useMemo, useRef, useState} from "react";
 import Counter from "./components/counter";
 import ClassComponent from "./components/ClassComponent";
 import './styles/App.css';
@@ -8,6 +8,7 @@ import MyButton from "./components/UI/button/MyButton";
 import MyInput from "./components/UI/input/MyInput";
 import PostForm from "./components/PostForm";
 import MySelect from "./components/UI/select/MySelect";
+import PostFilter from "./components/PostFilter";
 
 
 function App() {
@@ -16,7 +17,19 @@ function App() {
     {id:2, title: 'ccc', body:'ffff' },
     {id:3, title: 'bbb', body:'eee' }
   ])
-  const [selectedSort, setSelectedSort] = useState('')
+  const [filter, setFilter] = useState({sort: '', query: '' })
+
+  const sortedPosts = useMemo(() => {
+    if(filter.sort){
+      return [...posts].sort((a,b) => a[filter.sort].localeCompare(b[filter.sort]))
+    }
+    return posts;
+  }, [filter.sort, posts]);
+
+  const sortedAndSearchedPosts = useMemo(() => {
+      return sortedPosts.filter(post => post.title.toLowerCase().includes(filter.query.toLowerCase()))
+
+  }, [filter.query, sortedPosts])
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
@@ -26,28 +39,13 @@ function App() {
     setPosts(posts.filter(p => p.id !== post.id))
   }
 
-  const sortPosts = (sort) => {
-    setSelectedSort(sort)
-    setPosts([...posts].sort((a,b) => a[sort].localeCompare(b[sort])))
-  }
-
   return (
     <div className="App">
       <PostForm create={createPost}/>
       <hr style={{margin: '15px 0'}}/>
-      <div>
-       <MySelect
-         value={selectedSort}
-         onChange={sortPosts}
-          defaultValue="Sort by"
-          options={[
-        {value: 'title', name:'title'},
-        {value: 'body', name: 'description'},
-      ]}
-       />
-      </div>
-      {posts.length !== 0
-       ? <PostList remove={removePost} posts={posts} title="React Lists"/>
+      <PostFilter filter={filter} setFilter={setFilter}/>
+      {sortedAndSearchedPosts.length !== 0
+       ? <PostList remove={removePost} posts={sortedAndSearchedPosts} title="React Lists"/>
         : <h1 style={{textAlign: 'center'}}>NO POSTS HERE</h1>
       }
     </div>
