@@ -38,7 +38,7 @@ const lastElement = useRef()
 
   useEffect(() => {
     fetchPosts(limit, page)
-  }, [pagem, limit])
+  }, [page, limit])
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
